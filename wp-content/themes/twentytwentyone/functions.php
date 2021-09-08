@@ -637,13 +637,32 @@ function twentytwentyone_add_ie_class() {
 	<?php
 }
 
-add_action( 'pre_get_posts', 'add_my_post_types_to_query' );
+// add_action( 'pre_get_posts', 'add_my_post_types_to_query' );	
  
-function add_my_post_types_to_query( $query ) {
+// function add_my_post_types_to_query( $query ) {
 
  
-    if ( is_home() && $query->is_main_query() )
-        $query->set( 'post_type', array( 'post', 'recipes' ) );
-    return $query;
+//     if ( is_home() && $query->is_main_query() )
+//         $query->set( 'post_type', array( 'post', 'recipes' ) );
+//     return $query;
 
+// }
+
+$args = ['post_type' => 'post', 'post_status' => 'publish'];
+$the_query = new WP_Query( $args );
+// The Loop
+
+if ( $the_query->have_posts() ) {
+   	echo '<ul>';
+  	while ( $the_query->have_posts() ) {
+        $the_query->the_post();
+        echo '<li>' . get_the_title() . '</li>';
+    }
+    echo '</ul>';
+} else {
+	echo "no post";
+    // no posts found
 }
+
+/* Restore original Post Data */
+wp_reset_postdata();	
