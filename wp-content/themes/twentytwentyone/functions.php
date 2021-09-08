@@ -653,16 +653,109 @@ $the_query = new WP_Query( $args );
 // The Loop
 
 if ( $the_query->have_posts() ) {
-   	echo '<ul>';
-  	while ( $the_query->have_posts() ) {
-        $the_query->the_post();
-        echo '<li>' . get_the_title() . '</li>';
-    }
-    echo '</ul>';
+   // 	echo '<ul>';
+  	// while ( $the_query->have_posts() ) {
+   //      $the_query->the_post();
+   //      echo '<li>' . get_the_title() . '</li>';
+   //  }
+   //  echo '</ul>';	
 } else {
-	echo "no post";
+	// echo "no post";
     // no posts found
 }
 
 /* Restore original Post Data */
 wp_reset_postdata();	
+
+
+//Custom Post Type
+function wporg_custom_post_type() {
+    register_post_type('wporg_product',
+        array(
+            'labels'      => array(
+                'name'          => __('Products', 'textdomain'),
+                'singular_name' => __('Product', 'textdomain'),
+            ),
+                'public'      => true,
+                'has_archive' => true,
+        )
+    );
+}
+add_action('init', 'wporg_custom_post_type');
+
+function wporg_custom_ingredients() {
+    register_post_type('wporg_ingredients',
+        array(
+            'labels'      => array(
+                'name'          => __('Ingredients', 'textdomain'),
+                'singular_name' => __('Ingredient', 'textdomain'),
+            ),
+                'public'      => true,
+                'has_archive' => true,
+        )
+    );
+}
+add_action('init', 'wporg_custom_ingredients');
+
+
+//TAXONOMY
+
+function wporg_register_taxonomy_course() {
+     $labels = array(
+         'name'              => _x( 'Courses', 'taxonomy general name' ),
+         'singular_name'     => _x( 'Course', 'taxonomy singular name' ),
+         'search_items'      => __( 'Search Courses' ),
+         'all_items'         => __( 'All Courses' ),
+         'parent_item'       => __( 'Parent Course' ),
+         'parent_item_colon' => __( 'Parent Course:' ),
+         'edit_item'         => __( 'Edit Course' ),
+         'update_item'       => __( 'Update Course' ),
+         'add_new_item'      => __( 'Add New Course' ),
+         'new_item_name'     => __( 'New Course Name' ),
+         'menu_name'         => __( 'Course' ),
+     );
+     $args   = array(
+         'hierarchical'      => true, // make it hierarchical (like categories)
+         'labels'            => $labels,
+         'show_ui'           => true,
+         'show_admin_column' => true,
+         'query_var'         => true,
+         'rewrite'           => [ 'slug' => 'course' ],
+     );
+     register_taxonomy( 'course', [ 'post' ], $args );
+}
+add_action( 'init', 'wporg_register_taxonomy_course' );
+
+
+//Media Sizes
+
+add_image_size( 'custom-size_one', 220, 180, true); 
+
+add_image_size( 'custom-size_two', 240, 200, true); 
+
+add_image_size( 'custom-size_three', 260, 220, true); 
+
+//Custom Metabox
+function wporg_add_custom_box() {
+    $screens = [ 'post', 'wporg_cpt' ];
+    foreach ( $screens as $screen ) {
+        add_meta_box(
+            'wporg_box_id',                 // Unique ID
+            'Custom Meta Box Title',      // Box title
+            'wporg_custom_box_html',  // Content callback, must be of type callable
+            $screen                            // Post type
+        );
+    }
+}
+add_action( 'add_meta_boxes', 'wporg_add_custom_box' );
+
+function wporg_custom_box_html( $post ) {
+    ?>
+    <label for="wporg_field">Description for this field</label>
+    <select name="wporg_field" id="wporg_field" class="postbox">
+        <option value="">Select something...</option>
+        <option value="something">Something</option>
+        <option value="else">Else</option>
+    </select>
+    <?php
+}
