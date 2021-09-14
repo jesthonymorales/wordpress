@@ -12,10 +12,22 @@
 ?>
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
-
+	
 	<?php if ( ! is_front_page() ) : ?>
 		<header class="entry-header alignwide">
+		
 			<?php get_template_part( 'template-parts/header/entry-header' ); ?>
+		<?php the_field('page_sub_title'); ?> <br />
+		<?php 
+
+			// the_field('page_type'); 
+			$field = get_field_object( 'page_type' );
+			$value = $field['value'];
+			$label = $field['choices'][ $value ];
+			
+			echo $label;
+		?> 
+		<?php the_field('page_description'); ?>
 			<?php twenty_twenty_one_post_thumbnail(); ?>
 		</header><!-- .entry-header -->
 	<?php elseif ( has_post_thumbnail() ) : ?>
@@ -25,6 +37,7 @@
 	<?php endif; ?>
 
 	<div class="entry-content">
+
 		<?php
 		the_content();
 

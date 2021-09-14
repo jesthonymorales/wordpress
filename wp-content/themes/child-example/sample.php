@@ -1,12 +1,11 @@
 <div id="primary">
 	<div id="content" role="main">
-		
+		<p>
 		<?php
-
-			$value = get_field( "text_field" );
-			echo "<br /><br /> > ".$value;
+			the_field( "page_title" );
+			
 		?>
-
+		</p>
 
 	</div><!-- #content -->
 </div><!-- #primary -->
