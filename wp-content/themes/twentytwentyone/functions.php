@@ -760,3 +760,8 @@ function wporg_custom_box_html( $post ) {
     </select>
     <?php
 }
+
+
+add_filter('sober/controller/namespace', function () {
+    return 'Data';
+});
